@@ -1,4 +1,4 @@
-﻿namespace TuristickaOrganizacija
+﻿namespace TurističkaOrganizacija
 {
     partial class Form1
     {
