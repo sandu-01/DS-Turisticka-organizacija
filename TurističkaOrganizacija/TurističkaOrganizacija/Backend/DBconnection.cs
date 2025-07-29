@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TuristickaOrganizacija.Backend
+namespace TurističkaOrganizacija.Backend
 {
     public class DBconnection
     {
