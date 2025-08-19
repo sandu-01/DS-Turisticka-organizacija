@@ -8,10 +8,11 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>TurističkaOrganizacija</RootNamespace>
     <AssemblyName>TurističkaOrganizacija</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -52,7 +53,23 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Backend\AppConfig.cs" />
+    <Compile Include="Backend\DBconnection.cs" />
+    <Compile Include="Backend\DbProviderFactory.cs" />
+    <Compile Include="Domain\Entities.cs" />
+    <Compile Include="Application\Interfaces.cs" />
+    <Compile Include="Application\Services.cs" />
+    <Compile Include="Application\EventBus.cs" />
+    <Compile Include="Application\Validation.cs" />
+    <Compile Include="Application\PricingStrategies.cs" />
+    <Compile Include="Infrastructure\Security\SecurityService.cs" />
+    <Compile Include="Infrastructure\Backup\BackupService.cs" />
+    <Compile Include="Infrastructure\Repositories\SqlClient\ClientRepositorySql.cs" />
+    <Compile Include="Infrastructure\Repositories\SqlClient\PackageRepositorySql.cs" />
+    <Compile Include="Infrastructure\Repositories\SqlClient\ReservationRepositorySql.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ReservationForm.cs" />
+    <Compile Include="PackagesForm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -62,6 +79,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
