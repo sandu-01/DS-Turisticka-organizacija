@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,11 @@ namespace TurističkaOrganizacija.Backend
     public class DBconnection
     {
         private static DBconnection instance = null;
-        private SqlConnection _connection;
+        private DbConnection _connection;
 
         private static readonly object _lock = new object();
 
-        public static SqlConnection Instance
+        public static DbConnection Instance
         {
             get
             {
@@ -28,15 +29,12 @@ namespace TurističkaOrganizacija.Backend
                         }
                     }
                 }
-                return instance._connection;
+                // Always return a fresh connection to avoid sharing issues
+                return DbProviderFactory.CreateConnection();
             }
         }
 
 
-        private DBconnection() 
-        {
-            string connection_string = @"Data Source=(LocalDB)\dizajniranje_softvera;Database=agencija;integrated Security = True";
-            _connection = new SqlConnection(connection_string);
-        }
+        private DBconnection() { }
     }
 }
