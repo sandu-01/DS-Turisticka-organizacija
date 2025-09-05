@@ -79,7 +79,11 @@ namespace TurističkaOrganizacija
 
         private void AddClient()
         {
-            if (!ValidateInputs(out var client, out var passportPlain)) return;
+            if (!ValidateInputs(out var client, out var passportPlain))
+            {
+                MessageBox.Show("Popunite obavezna polja: Ime, Prezime, Pasoš, Email, Telefon.", "Validacija", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             try
             {
                 var repo = new ClientRepositorySql();
@@ -90,6 +94,7 @@ namespace TurističkaOrganizacija
 
                 var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
                 service.Create(client, passportPlain);
+                MessageBox.Show("Klijent uspešno dodat.", "Uspeh", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (System.Exception ex)
             {
@@ -102,7 +107,11 @@ namespace TurističkaOrganizacija
         private void UpdateClient()
         {
             if (dataGridView1.CurrentRow == null) return;
-            if (!ValidateInputs(out var client, out var passportPlain)) return;
+            if (!ValidateInputs(out var client, out var passportPlain))
+            {
+                MessageBox.Show("Popunite obavezna polja i označite klijenta.", "Validacija", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             if (dataGridView1.CurrentRow.DataBoundItem is TurističkaOrganizacija.Domain.Client selected)
             {
                 try
@@ -116,6 +125,7 @@ namespace TurističkaOrganizacija
 
                     var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
                     service.Update(client, passportPlain);
+                    MessageBox.Show("Klijent uspešno izmenjen.", "Uspeh", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (System.Exception ex)
                 {
