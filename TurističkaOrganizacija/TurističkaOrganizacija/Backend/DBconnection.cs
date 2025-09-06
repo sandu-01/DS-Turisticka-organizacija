@@ -11,8 +11,6 @@ namespace TurističkaOrganizacija.Backend
     public class DBconnection
     {
         private static DBconnection instance = null;
-        private DbConnection _connection;
-
         private static readonly object _lock = new object();
 
         public static DbConnection Instance

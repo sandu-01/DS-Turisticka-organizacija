@@ -107,7 +107,8 @@ namespace TurističkaOrganizacija.Infrastructure.Repositories.SqlClient
             AddParam(cmd, "@dest", package.Destination);
             AddParam(cmd, "@prevoz", package.TransportType);
             AddParam(cmd, "@smestaj", package.AccommodationType);
-            string aktivnosti = (package is MountainPackage mp && mp.Activities != null) ? string.Join(";", mp.Activities) : null;
+            var mountainPackage = package as MountainPackage;
+            string aktivnosti = (mountainPackage != null && mountainPackage.Activities != null) ? string.Join(";", mountainPackage.Activities) : null;
             AddParam(cmd, "@aktiv", aktivnosti);
             AddParam(cmd, "@vodic", string.IsNullOrEmpty(package.GuideName) ? null : "da");
             AddParam(cmd, "@trajanje", package.DurationDays.HasValue ? (object)TimeSpan.FromDays(package.DurationDays.Value) : DBNull.Value);
@@ -147,10 +148,11 @@ namespace TurističkaOrganizacija.Infrastructure.Repositories.SqlClient
             p.Destination = r["destinacija"] as string;
             p.TransportType = r["tipPrevoza"] as string;
             p.AccommodationType = r["vrstaSmestaja"] as string;
-            if (p is MountainPackage mp && r["dodatneAktivnosti"] != DBNull.Value)
+            var mountainPackage = p as MountainPackage;
+            if (mountainPackage != null && r["dodatneAktivnosti"] != DBNull.Value)
             {
                 string s = r["dodatneAktivnosti"].ToString();
-                mp.Activities = new List<string>(s.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                mountainPackage.Activities = new List<string>(s.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
             }
             p.GuideName = (r["vodic"] != DBNull.Value && r["vodic"].ToString() == "da") ? "Vodic" : null;
             if (r["trajanje"] != DBNull.Value)
