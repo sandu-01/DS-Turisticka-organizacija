@@ -46,11 +46,10 @@ namespace TurističkaOrganizacija.Backend
 
             if (!File.Exists(configPath))
             {
-                // Create a sample config so the app can start
                 File.WriteAllLines(configPath, new[]
                 {
                     "Turistička Agencija",
-                    "Server=localhost;Database=agencija;User Id=user;Password=pass;"
+                    ""
                 });
             }
 
