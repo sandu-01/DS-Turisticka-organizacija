@@ -41,8 +41,9 @@ namespace TurističkaOrganizacija.Backend
 
         private void LoadFromConfigFile()
         {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string configPath = Path.Combine(baseDirectory, "config.txt");
+            
+            string projectRoot = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory)));
+            string configPath = Path.Combine(projectRoot, "config.txt");
 
             if (!File.Exists(configPath))
             {

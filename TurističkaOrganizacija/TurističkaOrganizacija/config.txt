@@ -1,0 +1,2 @@
+Turistička Agencija
+Data Source=(LocalDB)\MSSQLLocalDB;Database=agencija;Integrated Security=True;
