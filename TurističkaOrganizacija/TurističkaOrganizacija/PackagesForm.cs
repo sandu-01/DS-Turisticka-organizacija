@@ -5,6 +5,8 @@ using TurističkaOrganizacija.Application;
 using TurističkaOrganizacija.Domain;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
 using TurističkaOrganizacija.Application.TemplateMethod;
+using System.Drawing;
+using TurističkaOrganizacija.GUI;
 
 namespace TurističkaOrganizacija
 {
@@ -77,6 +79,24 @@ namespace TurističkaOrganizacija
 
             LoadData();
             WireEvents();
+
+
+            UiKitPackagesForm.PackagesDesign(txtDestinacija, txtPrevoz, txtSmestaj, txtNaziv);
+            // Grid changes its size according to content
+            UiKit.WireAutoSizeGrid(grid, this, maxW: 0.9, maxH: 0.6);
+            //form bc color
+            UiKit.StyleForm(this, ColorTranslator.FromHtml("#b8aa5c"), 0.96);
+            //cells bc color
+            UiKitPackagesForm.ApplyCategoryColors(
+            grid,
+            baseCellBackColor: ColorTranslator.FromHtml("#1f2937"),
+            baseFontColor: Color.White,
+            baseGridLineColor: Color.Black,
+            keepSelectionHighlight: false,
+            categoryColumnName: "Type");
+
+            UiKit.StyleButtons(ColorTranslator.FromHtml("#e0c00d"), 96, btnDodaj, btnIzmeni, btnObrisi);
+
         }
 
         private void LoadData()
@@ -103,8 +123,7 @@ namespace TurističkaOrganizacija
 
             var processor = PackageProcessorFactory.CreateProcessor(p.Type);
             processor.ProcessPackage(p);
-            new PackageRepositorySql().Add(p);
-            LoadData();
+            service.Add(p);
         }
 
         private void UpdatePackage()
@@ -117,8 +136,7 @@ namespace TurističkaOrganizacija
             p.Id = selected.Id;
             var processor = PackageProcessorFactory.CreateProcessor(p.Type);
             processor.ProcessPackage(p);
-            new PackageRepositorySql().Update(p);
-            LoadData();
+            service.Update(p);
         }
 
         private void DeletePackage()
@@ -126,8 +144,7 @@ namespace TurističkaOrganizacija
             if (grid.CurrentRow == null) return;
             var selected = grid.CurrentRow.DataBoundItem as TravelPackage;
             if (selected == null) return;
-            new PackageRepositorySql().Delete(selected.Id);
-            LoadData();
+            service.Delete(selected.Id);
         }
 
         private TravelPackage BuildPackageFromInputs()
@@ -138,21 +155,19 @@ namespace TurističkaOrganizacija
                 return null;
             }
             string vrsta = cmbVrsta.SelectedItem.ToString();
-            TravelPackage p;
-            switch (vrsta)
-            {
-                case "more": p = new SeaPackage(); break;
-                case "planina": p = new MountainPackage(); break;
-                case "ekskurzija": p = new ExcursionPackage(); break;
-                case "krstarenje": p = new CruisePackage(); break;
-                default: p = new SeaPackage(); break;
-            }
-            p.Name = txtNaziv.Text.Trim();
-            p.Price = numCena.Value;
-            p.Destination = txtDestinacija.Text.Trim();
-            p.TransportType = txtPrevoz.Text.Trim();
-            p.AccommodationType = txtSmestaj.Text.Trim();
+            PackageType type = PackageType.Sea;
+            if (vrsta == "more") type = PackageType.Sea;
+            else if (vrsta == "planina") type = PackageType.Mountain;
+            else if (vrsta == "ekskurzija") type = PackageType.Excursion;
+            else if (vrsta == "krstarenje") type = PackageType.Cruise;
 
+            var factory = PackageFactory.GetFactory(type);
+            var p = factory.CreatePackage(
+                txtNaziv.Text.Trim(),
+                numCena.Value,
+                txtDestinacija.Text.Trim(),
+                txtPrevoz.Text.Trim(),
+                txtSmestaj.Text.Trim());
             return p;
         }
     }

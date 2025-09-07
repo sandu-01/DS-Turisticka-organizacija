@@ -12,6 +12,9 @@ using TurističkaOrganizacija.Infrastructure.Backup;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
 using TurističkaOrganizacija.Application;
 using TurističkaOrganizacija.Application.Commands;
+using TurističkaOrganizacija.Application.Facade;
+using TurističkaOrganizacija.Infrastructure.Adapters;
+using TurističkaOrganizacija.GUI;
 
 namespace TurističkaOrganizacija
 {
@@ -20,10 +23,34 @@ namespace TurističkaOrganizacija
         private readonly Timer backupTimer = new Timer();
         private BindingSource clientsBinding = new BindingSource();
         private readonly CommandInvoker commandInvoker = new CommandInvoker();
+        private TouristAgencyFacade BuildFacade()
+        {
+            var adapter = new SqlServerDatabaseAdapter(new ClientRepositorySql(), new PackageRepositorySql(), new ReservationRepositorySql());
+            var clientService = new ClientService(new ClientRepositorySql(), new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
+            var packageService = new PackageService(new PackageRepositorySql());
+            var reservationService = new ReservationService(new ReservationRepositorySql(), new PackageRepositorySql());
+            var security = new TurističkaOrganizacija.Infrastructure.Security.SecurityService();
+            return new TouristAgencyFacade(adapter, clientService, packageService, reservationService, security);
+        }
 
         public Form1()
         {
             InitializeComponent();
+            UiKitForm1.ClientsDesign(txtIme, txtPrezime, txtEmail, txtTelefon, txtPasos, 
+                RefreshClients, dtpRodjenje);
+            // Grid changes its size according to content
+            UiKit.WireAutoSizeGrid(dataGridView1, this, maxW: 0.9, maxH: 0.6);
+            //form bc color
+            UiKit.StyleForm(this, ColorTranslator.FromHtml("#9fd1b9"), 1);
+            //cells bc color
+            UiKit.StyleGridSolid(
+                dataGridView1,
+                cellBackColor: ColorTranslator.FromHtml("#c7e3b3"),
+                fontColor: Color.Black,
+                gridLineColor: Color.Black,
+                keepSelectionHighlight: false);
+            UiKit.StyleButtons(ColorTranslator.FromHtml("#2563eb"), 96, btnDodaj, btnIzmeni, btnObrisi, btnPaketi, btnDestinacije);
+
             this.Text = AppConfig.Instance.AgencyName;
 
             // Schedule automatic backup every 24h
@@ -41,20 +68,25 @@ namespace TurističkaOrganizacija
             };
             backupTimer.Start();
 
-            var repo = new ClientRepositorySql();
-            var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
-            var clients = service.Search(null, null, null);
-            clientsBinding.DataSource = clients;
+            var facade = BuildFacade();
+            clientsBinding.DataSource = facade.GetAllClients();
             dataGridView1.DataSource = clientsBinding;
 
 
             btnDodaj.Click += (s, e) => AddClient();
             btnIzmeni.Click += (s, e) => UpdateClient();
             btnObrisi.Click += (s, e) => DeleteClient();
-            btnOsvezi.Click += (s, e) => RefreshClients();
             btnPaketi.Click += (s, e) =>
             {
                 using (var f = new PackagesForm())
+                {
+                    f.ShowDialog(this);
+                }
+            };
+
+            btnDestinacije.Click += (s, e) =>
+            {
+                using (var f = new DestinationsForm())
                 {
                     f.ShowDialog(this);
                 }
@@ -182,11 +214,23 @@ namespace TurističkaOrganizacija
 
         private void RefreshClients()
         {
-            var service = BuildClientService();
+            var facade = BuildFacade();
             string ime = string.IsNullOrWhiteSpace(txtIme.Text) ? null : txtIme.Text.Trim();
             string prezime = string.IsNullOrWhiteSpace(txtPrezime.Text) ? null : txtPrezime.Text.Trim();
             string pasosLike = string.IsNullOrWhiteSpace(txtPasos.Text) ? null : txtPasos.Text.Trim();
-            clientsBinding.DataSource = service.Search(ime, prezime, pasosLike);
+            var baseSet = facade.SearchClients(ime, prezime, pasosLike);
+            TurističkaOrganizacija.GUI.UiKitForm1.RefreshClientsAddon(
+                clientsBinding,
+                baseSet,
+                txtEmail,
+                txtTelefon,
+                dtpRodjenje.Value.Date,
+                dataGridView1);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

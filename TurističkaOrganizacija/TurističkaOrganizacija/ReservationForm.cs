@@ -5,6 +5,10 @@ using TurističkaOrganizacija.Application;
 using TurističkaOrganizacija.Domain;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
 using TurističkaOrganizacija.Application.TemplateMethod;
+using TurističkaOrganizacija.Application.Facade;
+using TurističkaOrganizacija.Infrastructure.Adapters;
+using System.Drawing;
+using TurističkaOrganizacija.GUI;
 
 namespace TurističkaOrganizacija
 {
@@ -53,18 +57,49 @@ namespace TurističkaOrganizacija
 
             LoadData();
             WireEvents();
+
+            //UiKit.WireAutoSizeGrid(gridClients, this, maxW: 0.45, maxH: 0.6);
+            //UiKit.WireAutoSizeGrid(gridPackages, this, maxW: 0.9, maxH: 0.6);
+            //form bc color
+            UiKit.StyleForm(this, ColorTranslator.FromHtml("#42ad94"), 0.96);
+            //cells bc color
+            UiKit.StyleGridSolid(
+                gridClients,
+                cellBackColor: ColorTranslator.FromHtml("#9fd1b9"),
+                fontColor: Color.Black,
+                gridLineColor: Color.Black,
+                keepSelectionHighlight: false);
+            UiKit.StyleGridSolid(
+                gridReservations,
+                cellBackColor: ColorTranslator.FromHtml("#9fd1b9"),
+                fontColor: Color.Black,
+                gridLineColor: Color.Black,
+                keepSelectionHighlight: false);
+            UiKit.StyleButtons(ColorTranslator.FromHtml("#9d00ff"), 96, btnCancel, btnReserve);
         }
 
         private void LoadData()
         {
-            var clientService = new ClientService(new ClientRepositorySql(), new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
-            var packageService = new PackageService(new PackageRepositorySql());
-
-            gridClients.DataSource = clientService.Search(null, null, null).ToList();
-            var allPackages = packageService.GetAll(null).ToList();
+            var facade = BuildFacade();
+            gridClients.DataSource = facade.GetAllClients().ToList();
+            var allPackages = facade.GetPackagesByType(PackageType.Sea)
+                .Concat(facade.GetPackagesByType(PackageType.Mountain))
+                .Concat(facade.GetPackagesByType(PackageType.Excursion))
+                .Concat(facade.GetPackagesByType(PackageType.Cruise))
+                .ToList();
             gridPackages.DataSource = allPackages;
             gridClients.SelectionChanged += (s, e) => MarkReservedPackages();
             MarkReservedPackages();
+        }
+
+        private TouristAgencyFacade BuildFacade()
+        {
+            var adapter = new SqlServerDatabaseAdapter(new ClientRepositorySql(), new PackageRepositorySql(), new ReservationRepositorySql());
+            var clientService = new ClientService(new ClientRepositorySql(), new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
+            var packageService = new PackageService(new PackageRepositorySql());
+            var reservationService = new ReservationService(new ReservationRepositorySql(), new PackageRepositorySql());
+            var security = new TurističkaOrganizacija.Infrastructure.Security.SecurityService();
+            return new TouristAgencyFacade(adapter, clientService, packageService, reservationService, security);
         }
 
         private void WireEvents()
@@ -104,7 +139,8 @@ namespace TurističkaOrganizacija
             decimal total = strategy.Calculate(pack, (int)nudPassengers.Value);
 
             var service = new ReservationService(new ReservationRepositorySql(), new PackageRepositorySql());
-            service.Reserve(client.Id, pack, (int)nudPassengers.Value, total);
+            var cmd = new TurističkaOrganizacija.Application.Commands.MakeReservationCommand(client.Id, pack, (int)nudPassengers.Value, total, service);
+            new TurističkaOrganizacija.Application.Commands.CommandInvoker().ExecuteCommand(cmd);
             MessageBox.Show("Rezervacija uspešna.");
         }
 
@@ -125,8 +161,8 @@ namespace TurističkaOrganizacija
             if (gridClients.CurrentRow == null) return;
             var client = gridClients.CurrentRow.DataBoundItem as Client;
             if (client == null) return;
-            var repo = new ReservationRepositorySql();
-            var reserved = repo.GetByClient(client.Id).Select(r => r.PackageId).ToHashSet();
+            var adapter = new SqlServerDatabaseAdapter(new ClientRepositorySql(), new PackageRepositorySql(), new ReservationRepositorySql());
+            var reserved = adapter.GetReservationsByClient(client.Id).Select(r => r.PackageId).ToHashSet();
 
             foreach (DataGridViewRow row in gridPackages.Rows)
             {

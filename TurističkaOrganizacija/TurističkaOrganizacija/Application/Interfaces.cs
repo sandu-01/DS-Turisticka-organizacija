@@ -28,6 +28,7 @@ namespace TurističkaOrganizacija.Application
         void Add(Reservation reservation);
         void Update(Reservation reservation);
         void Delete(int id);
+        void Delete(int clientId, int packageId);
     }
 
     public interface ISecurityService

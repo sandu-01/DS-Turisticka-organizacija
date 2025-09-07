@@ -122,7 +122,7 @@ namespace TurističkaOrganizacija.Infrastructure.Adapters
 
         public void DeleteReservation(int clientId, int packageId)
         {
-            _reservationRepository.Delete(clientId);
+            _reservationRepository.Delete(clientId, packageId);
         }
     }
 

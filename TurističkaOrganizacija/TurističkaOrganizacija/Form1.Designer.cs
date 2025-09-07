@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.txtIme = new System.Windows.Forms.TextBox();
             this.txtPrezime = new System.Windows.Forms.TextBox();
@@ -39,76 +38,143 @@
             this.btnDodaj = new System.Windows.Forms.Button();
             this.btnIzmeni = new System.Windows.Forms.Button();
             this.btnObrisi = new System.Windows.Forms.Button();
-            this.btnOsvezi = new System.Windows.Forms.Button();
             this.btnPaketi = new System.Windows.Forms.Button();
+            this.btnDestinacije = new System.Windows.Forms.Button();
+            this.lblAgencyName = new System.Windows.Forms.Label();
+            this.lblDatum = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1000, 700);
-            this.MinimumSize = new System.Drawing.Size(900, 700);
-            // dataGridView
-            this.dataGridView1.Location = new System.Drawing.Point(12, 30);
-            this.dataGridView1.Size = new System.Drawing.Size(860, 400);
+            this.SuspendLayout();
+            // 
+            // dataGridView1
+            // 
             this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            // Ime
-            this.txtIme.Location = new System.Drawing.Point(12, 460);
-            this.txtIme.Width = 140;
+            this.dataGridView1.Location = new System.Drawing.Point(25, 22);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(860, 400);
+            this.dataGridView1.TabIndex = 7;
+            // 
+            // txtIme
+            // 
             this.txtIme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            // Prezime
-            this.txtPrezime.Location = new System.Drawing.Point(160, 460);
-            this.txtPrezime.Width = 140;
+            this.txtIme.Location = new System.Drawing.Point(25, 458);
+            this.txtIme.Name = "txtIme";
+            this.txtIme.Size = new System.Drawing.Size(140, 20);
+            this.txtIme.TabIndex = 8;
+            // 
+            // txtPrezime
+            // 
             this.txtPrezime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            // Pasos
-            this.txtPasos.Location = new System.Drawing.Point(308, 460);
-            this.txtPasos.Width = 120;
+            this.txtPrezime.Location = new System.Drawing.Point(173, 458);
+            this.txtPrezime.Name = "txtPrezime";
+            this.txtPrezime.Size = new System.Drawing.Size(132, 20);
+            this.txtPrezime.TabIndex = 9;
+            // 
+            // txtPasos
+            // 
             this.txtPasos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            // Email
-            this.txtEmail.Location = new System.Drawing.Point(12, 500);
-            this.txtEmail.Width = 280;
+            this.txtPasos.Location = new System.Drawing.Point(313, 458);
+            this.txtPasos.Name = "txtPasos";
+            this.txtPasos.Size = new System.Drawing.Size(128, 20);
+            this.txtPasos.TabIndex = 10;
+            // 
+            // txtEmail
+            // 
             this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            // Telefon
-            this.txtTelefon.Location = new System.Drawing.Point(300, 500);
-            this.txtTelefon.Width = 128;
+            this.txtEmail.Location = new System.Drawing.Point(25, 484);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(280, 20);
+            this.txtEmail.TabIndex = 11;
+            // 
+            // txtTelefon
+            // 
             this.txtTelefon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            // Datum
-            this.dtpRodjenje.Location = new System.Drawing.Point(12, 540);
-            this.dtpRodjenje.Width = 200;
+            this.txtTelefon.Location = new System.Drawing.Point(313, 484);
+            this.txtTelefon.Name = "txtTelefon";
+            this.txtTelefon.Size = new System.Drawing.Size(128, 20);
+            this.txtTelefon.TabIndex = 12;
+            // 
+            // dtpRodjenje
+            // 
             this.dtpRodjenje.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            // Dugmad
-            this.btnDodaj.Location = new System.Drawing.Point(12, 580);
+            this.dtpRodjenje.Location = new System.Drawing.Point(25, 522);
+            this.dtpRodjenje.Name = "dtpRodjenje";
+            this.dtpRodjenje.Size = new System.Drawing.Size(200, 20);
+            this.dtpRodjenje.TabIndex = 13;
+            // 
+            // btnDodaj
+            // 
             this.btnDodaj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDodaj.Location = new System.Drawing.Point(25, 578);
+            this.btnDodaj.Name = "btnDodaj";
+            this.btnDodaj.Size = new System.Drawing.Size(75, 23);
+            this.btnDodaj.TabIndex = 14;
             this.btnDodaj.Text = "Dodaj";
-            this.btnIzmeni.Location = new System.Drawing.Point(92, 580);
+            // 
+            // btnIzmeni
+            // 
             this.btnIzmeni.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnIzmeni.Location = new System.Drawing.Point(105, 578);
+            this.btnIzmeni.Name = "btnIzmeni";
+            this.btnIzmeni.Size = new System.Drawing.Size(75, 23);
+            this.btnIzmeni.TabIndex = 15;
             this.btnIzmeni.Text = "Izmeni";
-            this.btnObrisi.Location = new System.Drawing.Point(172, 580);
+            // 
+            // btnObrisi
+            // 
             this.btnObrisi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnObrisi.Location = new System.Drawing.Point(185, 578);
+            this.btnObrisi.Name = "btnObrisi";
+            this.btnObrisi.Size = new System.Drawing.Size(75, 23);
+            this.btnObrisi.TabIndex = 16;
             this.btnObrisi.Text = "Obriši";
-            this.btnOsvezi.Location = new System.Drawing.Point(252, 580);
-            this.btnOsvezi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOsvezi.Text = "Osveži";
-            // Paketi
-            this.btnPaketi.Location = new System.Drawing.Point(332, 580);
+            // 
+            // btnPaketi
+            // 
             this.btnPaketi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnPaketi.Location = new System.Drawing.Point(717, 578);
+            this.btnPaketi.Name = "btnPaketi";
+            this.btnPaketi.Size = new System.Drawing.Size(75, 23);
+            this.btnPaketi.TabIndex = 18;
             this.btnPaketi.Text = "Paketi";
-            // Agency name label
-            var lblAgencyName = new System.Windows.Forms.Label(); 
-            lblAgencyName.Text = "Naziv agencije: " + TurističkaOrganizacija.Backend.AppConfig.Instance.AgencyName; 
-            lblAgencyName.Location = new System.Drawing.Point(12, 2); 
-            lblAgencyName.AutoSize = true; 
-            lblAgencyName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold); 
-            lblAgencyName.ForeColor = System.Drawing.Color.DarkBlue;
-            lblAgencyName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left))); 
-            this.Controls.Add(lblAgencyName);
-            
-            // Labels
-            var lblIme = new System.Windows.Forms.Label(); lblIme.Text = "Ime *"; lblIme.Location = new System.Drawing.Point(12, 442); lblIme.AutoSize = true; lblIme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left))); this.Controls.Add(lblIme);
-            var lblPrezime = new System.Windows.Forms.Label(); lblPrezime.Text = "Prezime *"; lblPrezime.Location = new System.Drawing.Point(160, 442); lblPrezime.AutoSize = true; lblPrezime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left))); this.Controls.Add(lblPrezime);
-            var lblPasos = new System.Windows.Forms.Label(); lblPasos.Text = "Pasoš *"; lblPasos.Location = new System.Drawing.Point(308, 442); lblPasos.AutoSize = true; lblPasos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left))); this.Controls.Add(lblPasos);
-            var lblEmail = new System.Windows.Forms.Label(); lblEmail.Text = "Email *"; lblEmail.Location = new System.Drawing.Point(12, 482); lblEmail.AutoSize = true; lblEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left))); this.Controls.Add(lblEmail);
-            var lblTelefon = new System.Windows.Forms.Label(); lblTelefon.Text = "Telefon *"; lblTelefon.Location = new System.Drawing.Point(300, 482); lblTelefon.AutoSize = true; lblTelefon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left))); this.Controls.Add(lblTelefon);
-            var lblDatum = new System.Windows.Forms.Label(); lblDatum.Text = "Datum rođenja"; lblDatum.Location = new System.Drawing.Point(12, 522); lblDatum.AutoSize = true; lblDatum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left))); this.Controls.Add(lblDatum);
+            // 
+            // btnDestinacije
+            // 
+            this.btnDestinacije.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDestinacije.Location = new System.Drawing.Point(798, 578);
+            this.btnDestinacije.Name = "btnDestinacije";
+            this.btnDestinacije.Size = new System.Drawing.Size(94, 23);
+            this.btnDestinacije.TabIndex = 19;
+            this.btnDestinacije.Text = "Destinacije";
+            // 
+            // lblAgencyName
+            // 
+            this.lblAgencyName.AutoSize = true;
+            this.lblAgencyName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.lblAgencyName.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lblAgencyName.Location = new System.Drawing.Point(12, 2);
+            this.lblAgencyName.Name = "lblAgencyName";
+            this.lblAgencyName.Size = new System.Drawing.Size(0, 17);
+            this.lblAgencyName.TabIndex = 0;
+            // 
+            // lblDatum
+            // 
+            this.lblDatum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblDatum.AutoSize = true;
+            this.lblDatum.Location = new System.Drawing.Point(25, 506);
+            this.lblDatum.Name = "lblDatum";
+            this.lblDatum.Size = new System.Drawing.Size(77, 13);
+            this.lblDatum.TabIndex = 6;
+            this.lblDatum.Text = "Datum rođenja";
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1000, 700);
+            this.Controls.Add(this.lblAgencyName);
+            this.Controls.Add(this.lblDatum);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.txtIme);
             this.Controls.Add(this.txtPrezime);
@@ -119,10 +185,16 @@
             this.Controls.Add(this.btnDodaj);
             this.Controls.Add(this.btnIzmeni);
             this.Controls.Add(this.btnObrisi);
-            this.Controls.Add(this.btnOsvezi);
             this.Controls.Add(this.btnPaketi);
+            this.Controls.Add(this.btnDestinacije);
+            this.MinimumSize = new System.Drawing.Size(900, 700);
+            this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
@@ -137,8 +209,10 @@
         private System.Windows.Forms.Button btnDodaj;
         private System.Windows.Forms.Button btnIzmeni;
         private System.Windows.Forms.Button btnObrisi;
-        private System.Windows.Forms.Button btnOsvezi;
         private System.Windows.Forms.Button btnPaketi;
+        private System.Windows.Forms.Button btnDestinacije;
+        private System.Windows.Forms.Label lblAgencyName;
+        private System.Windows.Forms.Label lblDatum;
     }
 }
 

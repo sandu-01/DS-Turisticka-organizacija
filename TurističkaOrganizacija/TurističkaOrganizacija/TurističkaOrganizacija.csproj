@@ -47,6 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GUI\**\*.cs" />
+    <EmbeddedResource Include="GUI\**\*.resx" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +81,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PackagesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DestinationsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
