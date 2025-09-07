@@ -38,7 +38,7 @@ namespace TurističkaOrganizacija.Backend
             if (!string.IsNullOrWhiteSpace(connectionString)) return new SqlConnection(connectionString);
 
             // Fallback na postojeći LocalDB ukoliko config nije postavljen.
-            return new SqlConnection(@"Data Source=(LocalDB)\dizajniranje_softvera;Database=agencija;Integrated Security=True");
+            return new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;Database=agencija;Integrated Security=True");
         }
     }
 }

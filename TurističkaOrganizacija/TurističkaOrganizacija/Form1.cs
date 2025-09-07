@@ -11,6 +11,10 @@ using TurističkaOrganizacija.Backend;
 using TurističkaOrganizacija.Infrastructure.Backup;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
 using TurističkaOrganizacija.Application;
+using TurističkaOrganizacija.Application.Commands;
+using TurističkaOrganizacija.Application.Facade;
+using TurističkaOrganizacija.Infrastructure.Adapters;
+using TurističkaOrganizacija.GUI;
 
 namespace TurističkaOrganizacija
 {
@@ -18,10 +22,35 @@ namespace TurističkaOrganizacija
     {
         private readonly Timer backupTimer = new Timer();
         private BindingSource clientsBinding = new BindingSource();
+        private readonly CommandInvoker commandInvoker = new CommandInvoker();
+        private TouristAgencyFacade BuildFacade()
+        {
+            var adapter = new SqlServerDatabaseAdapter(new ClientRepositorySql(), new PackageRepositorySql(), new ReservationRepositorySql());
+            var clientService = new ClientService(new ClientRepositorySql(), new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
+            var packageService = new PackageService(new PackageRepositorySql());
+            var reservationService = new ReservationService(new ReservationRepositorySql(), new PackageRepositorySql());
+            var security = new TurističkaOrganizacija.Infrastructure.Security.SecurityService();
+            return new TouristAgencyFacade(adapter, clientService, packageService, reservationService, security);
+        }
 
         public Form1()
         {
             InitializeComponent();
+            UiKitForm1.ClientsDesign(txtIme, txtPrezime, txtEmail, txtTelefon, txtPasos, 
+                RefreshClients, dtpRodjenje);
+            // Grid changes its size according to content
+            UiKit.WireAutoSizeGrid(dataGridView1, this, maxW: 0.9, maxH: 0.6);
+            //form bc color
+            UiKit.StyleForm(this, ColorTranslator.FromHtml("#9fd1b9"), 1);
+            //cells bc color
+            UiKit.StyleGridSolid(
+                dataGridView1,
+                cellBackColor: ColorTranslator.FromHtml("#c7e3b3"),
+                fontColor: Color.Black,
+                gridLineColor: Color.Black,
+                keepSelectionHighlight: false);
+            UiKit.StyleButtons(ColorTranslator.FromHtml("#2563eb"), 96, btnDodaj, btnIzmeni, btnObrisi, btnPaketi, btnDestinacije);
+
             this.Text = AppConfig.Instance.AgencyName;
 
             // Schedule automatic backup every 24h
@@ -39,18 +68,14 @@ namespace TurističkaOrganizacija
             };
             backupTimer.Start();
 
-            // Load clients into grid as MVP
-            var repo = new ClientRepositorySql();
-            var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
-            var clients = service.Search(null, null, null);
-            clientsBinding.DataSource = clients;
+            var facade = BuildFacade();
+            clientsBinding.DataSource = facade.GetAllClients();
             dataGridView1.DataSource = clientsBinding;
 
-            // Wire buttons
-            btnDodaj.Click += (s, e) => AddClient();
-            btnIzmeni.Click += (s, e) => UpdateClient();
+
+            btnDodaj.Click += (s, e) => btnAddClient_Click(s,e);
+            btnIzmeni.Click += (s, e) => btnIzmena_Click(s,e);
             btnObrisi.Click += (s, e) => DeleteClient();
-            btnOsvezi.Click += (s, e) => RefreshClients();
             btnPaketi.Click += (s, e) =>
             {
                 using (var f = new PackagesForm())
@@ -59,13 +84,25 @@ namespace TurističkaOrganizacija
                 }
             };
 
-            // Double-click opens reservation form
+            btnDestinacije.Click += (s, e) =>
+            {
+                using (var f = new DestinationsForm())
+                {
+                    f.ShowDialog(this);
+                }
+            };
+        
             dataGridView1.DoubleClick += (s, e) =>
             {
                 using (var f = new ReservationForm())
                 {
                     f.ShowDialog(this);
                 }
+            };
+
+            TurističkaOrganizacija.Application.EventBus.ClientsChanged += () =>
+            {
+                try { RefreshClients(); } catch { }
             };
         }
 
@@ -75,54 +112,30 @@ namespace TurističkaOrganizacija
             return new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
         }
 
-        
 
-        private void AddClient()
+        private void btnAddClient_Click(object sender, EventArgs e)
         {
-            if (!ValidateInputs(out var client, out var passportPlain)) return;
-            try
+            using (var dlg = new AddClientForm(BuildClientService(), commandInvoker))
             {
-                var repo = new ClientRepositorySql();
-                IValidationRule chain = new RequiredFieldsRule();
-                chain.SetNext(new EmailFormatRule());
-                chain.SetNext(new UniquePassportRule(repo, null));
-                chain.Validate(client);
-
-                var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
-                service.Create(client, passportPlain);
+                if (dlg.ShowDialog(this) == DialogResult.OK)
+                {
+                    // EventBus.ClientsChanged već gađa RefreshClients(); ovo je dodatna sigurnost
+                    try { RefreshClients(); } catch { }
+                }
             }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
-            RefreshClients();
         }
 
-        private void UpdateClient()
+        private void btnIzmena_Click(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow == null) return;
-            if (!ValidateInputs(out var client, out var passportPlain)) return;
-            if (dataGridView1.CurrentRow.DataBoundItem is TurističkaOrganizacija.Domain.Client selected)
-            {
-                try
-                {
-                    client.Id = selected.Id;
-                    var repo = new ClientRepositorySql();
-                    IValidationRule chain = new RequiredFieldsRule();
-                    chain.SetNext(new EmailFormatRule());
-                    chain.SetNext(new UniquePassportRule(repo, client.Id));
-                    chain.Validate(client);
+            if (!(dataGridView1.CurrentRow.DataBoundItem is TurističkaOrganizacija.Domain.Client selected)) return;
 
-                    var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
-                    service.Update(client, passportPlain);
-                }
-                catch (System.Exception ex)
+            using (var dlg = new EditClientForm(selected, BuildClientService(), commandInvoker))
+            {
+                if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
-                    MessageBox.Show(ex.Message);
-                    return;
+                    try { RefreshClients(); } catch { }
                 }
-                RefreshClients();
             }
         }
 
@@ -132,8 +145,9 @@ namespace TurističkaOrganizacija
             if (dataGridView1.CurrentRow.DataBoundItem is TurističkaOrganizacija.Domain.Client selected)
             {
                 var service = BuildClientService();
-                service.Delete(selected.Id);
-                RefreshClients();
+                var cmd = new DeleteClientCommand(selected, service);
+                commandInvoker.ExecuteCommand(cmd);
+
             }
         }
 
@@ -155,21 +169,32 @@ namespace TurističkaOrganizacija
                 Email = txtEmail.Text.Trim(),
                 Phone = txtTelefon.Text.Trim()
             };
-            // Validation chain
             IValidationRule chain = new RequiredFieldsRule();
             chain.SetNext(new EmailFormatRule());
             chain.Validate(client);
             return true;
         }
 
-        // Search filters on refresh
+
         private void RefreshClients()
         {
-            var service = BuildClientService();
+            var facade = BuildFacade();
             string ime = string.IsNullOrWhiteSpace(txtIme.Text) ? null : txtIme.Text.Trim();
             string prezime = string.IsNullOrWhiteSpace(txtPrezime.Text) ? null : txtPrezime.Text.Trim();
             string pasosLike = string.IsNullOrWhiteSpace(txtPasos.Text) ? null : txtPasos.Text.Trim();
-            clientsBinding.DataSource = service.Search(ime, prezime, pasosLike);
+            var baseSet = facade.SearchClients(ime, prezime, pasosLike);
+            TurističkaOrganizacija.GUI.UiKitForm1.RefreshClientsAddon(
+                clientsBinding,
+                baseSet,
+                txtEmail,
+                txtTelefon,
+                dtpRodjenje.Value.Date,
+                dataGridView1);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
