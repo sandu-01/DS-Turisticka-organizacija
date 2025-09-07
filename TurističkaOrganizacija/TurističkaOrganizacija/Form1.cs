@@ -11,6 +11,7 @@ using TurističkaOrganizacija.Backend;
 using TurističkaOrganizacija.Infrastructure.Backup;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
 using TurističkaOrganizacija.Application;
+using TurističkaOrganizacija.Application.Commands;
 
 namespace TurističkaOrganizacija
 {
@@ -18,6 +19,7 @@ namespace TurističkaOrganizacija
     {
         private readonly Timer backupTimer = new Timer();
         private BindingSource clientsBinding = new BindingSource();
+        private readonly CommandInvoker commandInvoker = new CommandInvoker();
 
         public Form1()
         {
@@ -39,14 +41,13 @@ namespace TurističkaOrganizacija
             };
             backupTimer.Start();
 
-            // Load clients into grid as MVP
             var repo = new ClientRepositorySql();
             var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
             var clients = service.Search(null, null, null);
             clientsBinding.DataSource = clients;
             dataGridView1.DataSource = clientsBinding;
 
-            // Wire buttons
+
             btnDodaj.Click += (s, e) => AddClient();
             btnIzmeni.Click += (s, e) => UpdateClient();
             btnObrisi.Click += (s, e) => DeleteClient();
@@ -58,14 +59,18 @@ namespace TurističkaOrganizacija
                     f.ShowDialog(this);
                 }
             };
-
-            // Double-click opens reservation form
+        
             dataGridView1.DoubleClick += (s, e) =>
             {
                 using (var f = new ReservationForm())
                 {
                     f.ShowDialog(this);
                 }
+            };
+
+            TurističkaOrganizacija.Application.EventBus.ClientsChanged += () =>
+            {
+                try { RefreshClients(); } catch { }
             };
         }
 
@@ -93,7 +98,8 @@ namespace TurističkaOrganizacija
                 chain.Validate(client);
 
                 var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
-                service.Create(client, passportPlain);
+                var cmd = new AddClientCommand(client, passportPlain, service);
+                commandInvoker.ExecuteCommand(cmd);
                 MessageBox.Show("Klijent uspešno dodat.", "Uspeh", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (System.Exception ex)
@@ -101,7 +107,7 @@ namespace TurističkaOrganizacija
                 MessageBox.Show(ex.Message);
                 return;
             }
-            RefreshClients();
+
         }
 
         private void UpdateClient()
@@ -124,7 +130,8 @@ namespace TurističkaOrganizacija
                     chain.Validate(client);
 
                     var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
-                    service.Update(client, passportPlain);
+                    var cmd = new UpdateClientCommand(selected, client, passportPlain, service);
+                    commandInvoker.ExecuteCommand(cmd);
                     MessageBox.Show("Klijent uspešno izmenjen.", "Uspeh", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (System.Exception ex)
@@ -132,7 +139,7 @@ namespace TurističkaOrganizacija
                     MessageBox.Show(ex.Message);
                     return;
                 }
-                RefreshClients();
+
             }
         }
 
@@ -142,8 +149,9 @@ namespace TurističkaOrganizacija
             if (dataGridView1.CurrentRow.DataBoundItem is TurističkaOrganizacija.Domain.Client selected)
             {
                 var service = BuildClientService();
-                service.Delete(selected.Id);
-                RefreshClients();
+                var cmd = new DeleteClientCommand(selected, service);
+                commandInvoker.ExecuteCommand(cmd);
+
             }
         }
 
@@ -165,14 +173,13 @@ namespace TurističkaOrganizacija
                 Email = txtEmail.Text.Trim(),
                 Phone = txtTelefon.Text.Trim()
             };
-            // Validation chain
             IValidationRule chain = new RequiredFieldsRule();
             chain.SetNext(new EmailFormatRule());
             chain.Validate(client);
             return true;
         }
 
-        // Search filters on refresh
+
         private void RefreshClients()
         {
             var service = BuildClientService();

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using TurističkaOrganizacija.Application;
 using TurističkaOrganizacija.Domain;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
+using TurističkaOrganizacija.Application.TemplateMethod;
 
 namespace TurističkaOrganizacija
 {
@@ -81,6 +82,12 @@ namespace TurističkaOrganizacija
                     MarkReservedPackages();
                 }
             };
+
+
+            TurističkaOrganizacija.Application.EventBus.ClientsChanged += () =>
+            {
+                try { LoadData(); } catch { }
+            };
         }
 
         private void Reserve()
@@ -90,7 +97,10 @@ namespace TurističkaOrganizacija
             var pack = gridPackages.CurrentRow.DataBoundItem as TravelPackage;
             if (client == null || pack == null) return;
 
-            IPricingStrategy strategy = new EarlyBirdDiscountStrategy(new BasePriceStrategy());
+            IPricingStrategy strategy = new BasePriceStrategy();
+            strategy = new EarlyBirdDiscountStrategy(strategy);
+            strategy = new GroupDiscountStrategy(strategy);
+            strategy = new SeasonalPricingStrategy(strategy);
             decimal total = strategy.Calculate(pack, (int)nudPassengers.Value);
 
             var service = new ReservationService(new ReservationRepositorySql(), new PackageRepositorySql());
@@ -100,7 +110,6 @@ namespace TurističkaOrganizacija
 
         private void Cancel()
         {
-            // Minimal: delete reservation if exists by composite key
             if (gridClients.CurrentRow == null || gridPackages.CurrentRow == null) return;
             var client = gridClients.CurrentRow.DataBoundItem as Client;
             var pack = gridPackages.CurrentRow.DataBoundItem as TravelPackage;

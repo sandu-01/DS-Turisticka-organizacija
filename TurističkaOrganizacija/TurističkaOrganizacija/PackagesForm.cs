@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using TurističkaOrganizacija.Application;
 using TurističkaOrganizacija.Domain;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
+using TurističkaOrganizacija.Application.TemplateMethod;
 
 namespace TurističkaOrganizacija
 {
@@ -88,12 +89,20 @@ namespace TurističkaOrganizacija
             btnDodaj.Click += (s, e) => AddPackage();
             btnIzmeni.Click += (s, e) => UpdatePackage();
             btnObrisi.Click += (s, e) => DeletePackage();
+
+            TurističkaOrganizacija.Application.EventBus.PackagesChanged += () =>
+            {
+                try { LoadData(); } catch { }
+            };
         }
 
         private void AddPackage()
         {
             var p = BuildPackageFromInputs();
             if (p == null) return;
+
+            var processor = PackageProcessorFactory.CreateProcessor(p.Type);
+            processor.ProcessPackage(p);
             new PackageRepositorySql().Add(p);
             LoadData();
         }
@@ -106,6 +115,8 @@ namespace TurističkaOrganizacija
             var p = BuildPackageFromInputs();
             if (p == null) return;
             p.Id = selected.Id;
+            var processor = PackageProcessorFactory.CreateProcessor(p.Type);
+            processor.ProcessPackage(p);
             new PackageRepositorySql().Update(p);
             LoadData();
         }
@@ -141,6 +152,7 @@ namespace TurističkaOrganizacija
             p.Destination = txtDestinacija.Text.Trim();
             p.TransportType = txtPrevoz.Text.Trim();
             p.AccommodationType = txtSmestaj.Text.Trim();
+
             return p;
         }
     }
