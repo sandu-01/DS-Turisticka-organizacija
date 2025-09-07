@@ -42,6 +42,7 @@
             this.btnDestinacije = new System.Windows.Forms.Button();
             this.lblAgencyName = new System.Windows.Forms.Label();
             this.lblDatum = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,7 +59,7 @@
             // txtIme
             // 
             this.txtIme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtIme.Location = new System.Drawing.Point(25, 458);
+            this.txtIme.Location = new System.Drawing.Point(25, 441);
             this.txtIme.Name = "txtIme";
             this.txtIme.Size = new System.Drawing.Size(140, 20);
             this.txtIme.TabIndex = 8;
@@ -66,7 +67,7 @@
             // txtPrezime
             // 
             this.txtPrezime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtPrezime.Location = new System.Drawing.Point(173, 458);
+            this.txtPrezime.Location = new System.Drawing.Point(173, 441);
             this.txtPrezime.Name = "txtPrezime";
             this.txtPrezime.Size = new System.Drawing.Size(132, 20);
             this.txtPrezime.TabIndex = 9;
@@ -74,7 +75,7 @@
             // txtPasos
             // 
             this.txtPasos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtPasos.Location = new System.Drawing.Point(313, 458);
+            this.txtPasos.Location = new System.Drawing.Point(313, 441);
             this.txtPasos.Name = "txtPasos";
             this.txtPasos.Size = new System.Drawing.Size(128, 20);
             this.txtPasos.TabIndex = 10;
@@ -82,7 +83,7 @@
             // txtEmail
             // 
             this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtEmail.Location = new System.Drawing.Point(25, 484);
+            this.txtEmail.Location = new System.Drawing.Point(25, 467);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(280, 20);
             this.txtEmail.TabIndex = 11;
@@ -90,7 +91,7 @@
             // txtTelefon
             // 
             this.txtTelefon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtTelefon.Location = new System.Drawing.Point(313, 484);
+            this.txtTelefon.Location = new System.Drawing.Point(311, 467);
             this.txtTelefon.Name = "txtTelefon";
             this.txtTelefon.Size = new System.Drawing.Size(128, 20);
             this.txtTelefon.TabIndex = 12;
@@ -98,7 +99,7 @@
             // dtpRodjenje
             // 
             this.dtpRodjenje.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.dtpRodjenje.Location = new System.Drawing.Point(25, 522);
+            this.dtpRodjenje.Location = new System.Drawing.Point(25, 507);
             this.dtpRodjenje.Name = "dtpRodjenje";
             this.dtpRodjenje.Size = new System.Drawing.Size(200, 20);
             this.dtpRodjenje.TabIndex = 13;
@@ -106,7 +107,7 @@
             // btnDodaj
             // 
             this.btnDodaj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDodaj.Location = new System.Drawing.Point(25, 578);
+            this.btnDodaj.Location = new System.Drawing.Point(27, 578);
             this.btnDodaj.Name = "btnDodaj";
             this.btnDodaj.Size = new System.Drawing.Size(75, 23);
             this.btnDodaj.TabIndex = 14;
@@ -124,7 +125,7 @@
             // btnObrisi
             // 
             this.btnObrisi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnObrisi.Location = new System.Drawing.Point(185, 578);
+            this.btnObrisi.Location = new System.Drawing.Point(186, 578);
             this.btnObrisi.Name = "btnObrisi";
             this.btnObrisi.Size = new System.Drawing.Size(75, 23);
             this.btnObrisi.TabIndex = 16;
@@ -162,17 +163,27 @@
             // 
             this.lblDatum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblDatum.AutoSize = true;
-            this.lblDatum.Location = new System.Drawing.Point(25, 506);
+            this.lblDatum.Location = new System.Drawing.Point(25, 491);
             this.lblDatum.Name = "lblDatum";
             this.lblDatum.Size = new System.Drawing.Size(77, 13);
             this.lblDatum.TabIndex = 6;
             this.lblDatum.Text = "Datum rođenja";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(25, 425);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(96, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "Search parameters";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1000, 700);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lblAgencyName);
             this.Controls.Add(this.lblDatum);
             this.Controls.Add(this.dataGridView1);
@@ -213,6 +224,7 @@
         private System.Windows.Forms.Button btnDestinacije;
         private System.Windows.Forms.Label lblAgencyName;
         private System.Windows.Forms.Label lblDatum;
+        private System.Windows.Forms.Label label1;
     }
 }
 

@@ -73,8 +73,8 @@ namespace TurističkaOrganizacija
             dataGridView1.DataSource = clientsBinding;
 
 
-            btnDodaj.Click += (s, e) => AddClient();
-            btnIzmeni.Click += (s, e) => UpdateClient();
+            btnDodaj.Click += (s, e) => btnAddClient_Click(s,e);
+            btnIzmeni.Click += (s, e) => btnIzmena_Click(s,e);
             btnObrisi.Click += (s, e) => DeleteClient();
             btnPaketi.Click += (s, e) =>
             {
@@ -112,66 +112,30 @@ namespace TurističkaOrganizacija
             return new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
         }
 
-        
 
-        private void AddClient()
+        private void btnAddClient_Click(object sender, EventArgs e)
         {
-            if (!ValidateInputs(out var client, out var passportPlain))
+            using (var dlg = new AddClientForm(BuildClientService(), commandInvoker))
             {
-                MessageBox.Show("Popunite obavezna polja: Ime, Prezime, Pasoš, Email, Telefon.", "Validacija", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                if (dlg.ShowDialog(this) == DialogResult.OK)
+                {
+                    // EventBus.ClientsChanged već gađa RefreshClients(); ovo je dodatna sigurnost
+                    try { RefreshClients(); } catch { }
+                }
             }
-            try
-            {
-                var repo = new ClientRepositorySql();
-                IValidationRule chain = new RequiredFieldsRule();
-                chain.SetNext(new EmailFormatRule());
-                chain.SetNext(new UniquePassportRule(repo, null));
-                chain.Validate(client);
-
-                var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
-                var cmd = new AddClientCommand(client, passportPlain, service);
-                commandInvoker.ExecuteCommand(cmd);
-                MessageBox.Show("Klijent uspešno dodat.", "Uspeh", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
-
         }
 
-        private void UpdateClient()
+        private void btnIzmena_Click(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow == null) return;
-            if (!ValidateInputs(out var client, out var passportPlain))
-            {
-                MessageBox.Show("Popunite obavezna polja i označite klijenta.", "Validacija", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (dataGridView1.CurrentRow.DataBoundItem is TurističkaOrganizacija.Domain.Client selected)
-            {
-                try
-                {
-                    client.Id = selected.Id;
-                    var repo = new ClientRepositorySql();
-                    IValidationRule chain = new RequiredFieldsRule();
-                    chain.SetNext(new EmailFormatRule());
-                    chain.SetNext(new UniquePassportRule(repo, client.Id));
-                    chain.Validate(client);
+            if (!(dataGridView1.CurrentRow.DataBoundItem is TurističkaOrganizacija.Domain.Client selected)) return;
 
-                    var service = new ClientService(repo, new TurističkaOrganizacija.Infrastructure.Security.SecurityService());
-                    var cmd = new UpdateClientCommand(selected, client, passportPlain, service);
-                    commandInvoker.ExecuteCommand(cmd);
-                    MessageBox.Show("Klijent uspešno izmenjen.", "Uspeh", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (System.Exception ex)
+            using (var dlg = new EditClientForm(selected, BuildClientService(), commandInvoker))
+            {
+                if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
-                    MessageBox.Show(ex.Message);
-                    return;
+                    try { RefreshClients(); } catch { }
                 }
-
             }
         }
 
