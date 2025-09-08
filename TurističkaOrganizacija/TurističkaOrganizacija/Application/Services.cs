@@ -149,6 +149,18 @@ namespace TurističkaOrganizacija.Application
             _reservationRepository.Delete(clientId, packageId);
             TurističkaOrganizacija.Application.EventBus.PublishReservationsChanged(clientId);
         }
+
+        public void UpdatePassengers(int clientId, int packageId, int passengerCount)
+        {
+            var reservation = new ReservationBuilder()
+                .ForClient(clientId)
+                .ForPackage(packageId)
+                .WithPassengers(passengerCount)
+                .ReservedAt(DateTime.UtcNow)
+                .Build();
+            _reservationRepository.Update(reservation);
+            TurističkaOrganizacija.Application.EventBus.PublishReservationsChanged(clientId);
+        }
     }
 }
 

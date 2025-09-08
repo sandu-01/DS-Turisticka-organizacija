@@ -18,6 +18,10 @@ namespace TurističkaOrganizacija
             this.Width = 400;
             this.Height = 500;
             list.Dock = DockStyle.Fill;
+            list.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            list.ItemHeight = 28;
+            list.IntegralHeight = false;
+            list.BorderStyle = BorderStyle.None;
             this.Controls.Add(list);
             LoadData();
         }
