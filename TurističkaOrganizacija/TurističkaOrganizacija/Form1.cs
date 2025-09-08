@@ -71,6 +71,7 @@ namespace TurističkaOrganizacija
             var facade = BuildFacade();
             clientsBinding.DataSource = facade.GetAllClients();
             dataGridView1.DataSource = clientsBinding;
+            try { if (dataGridView1.Columns["PassportNumber"] != null) dataGridView1.Columns["PassportNumber"].Visible = false; } catch { }
 
 
             btnDodaj.Click += (s, e) => btnAddClient_Click(s,e);
@@ -94,7 +95,26 @@ namespace TurističkaOrganizacija
         
             dataGridView1.DoubleClick += (s, e) =>
             {
-                using (var f = new ReservationForm())
+                if (dataGridView1.CurrentRow == null)
+                {
+                    using (var f = new ReservationForm())
+                    {
+                        f.ShowDialog(this);
+                    }
+                    return;
+                }
+
+                var selected = dataGridView1.CurrentRow.DataBoundItem as TurističkaOrganizacija.Domain.Client;
+                if (selected == null)
+                {
+                    using (var f = new ReservationForm())
+                    {
+                        f.ShowDialog(this);
+                    }
+                    return;
+                }
+
+                using (var f = new ReservationForm(selected))
                 {
                     f.ShowDialog(this);
                 }
@@ -190,6 +210,7 @@ namespace TurističkaOrganizacija
                 txtTelefon,
                 dtpRodjenje.Value.Date,
                 dataGridView1);
+            try { if (dataGridView1.Columns["PassportNumber"] != null) dataGridView1.Columns["PassportNumber"].Visible = false; } catch { }
         }
 
         private void Form1_Load(object sender, EventArgs e)

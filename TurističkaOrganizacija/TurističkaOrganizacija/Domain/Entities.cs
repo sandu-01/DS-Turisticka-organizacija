@@ -53,6 +53,14 @@ namespace TurističkaOrganizacija.Domain
     public class MountainPackage : TravelPackage
     {
         public List<string> Activities { get; set; } = new List<string>();
+        public string ActivitiesDisplay
+        {
+            get
+            {
+                if (Activities == null || Activities.Count == 0) return string.Empty;
+                return string.Join(", ", Activities);
+            }
+        }
         public MountainPackage() { Type = PackageType.Mountain; }
     }
 
