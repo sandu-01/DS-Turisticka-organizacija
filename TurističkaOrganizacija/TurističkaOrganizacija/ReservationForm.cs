@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using TurističkaOrganizacija.Application;
 using TurističkaOrganizacija.Domain;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
-using TurističkaOrganizacija.Application.TemplateMethod;
+// removed TemplateMethod usage
 using TurističkaOrganizacija.Application.Facade;
 using TurističkaOrganizacija.Infrastructure.Adapters;
 using System.Drawing;
@@ -280,14 +280,10 @@ namespace TurističkaOrganizacija
             if (client == null || pack == null) return;
 
             IPricingStrategy strategy = new BasePriceStrategy();
-            strategy = new EarlyBirdDiscountStrategy(strategy);
-            strategy = new GroupDiscountStrategy(strategy);
-            strategy = new SeasonalPricingStrategy(strategy);
             decimal total = strategy.Calculate(pack, (int)nudPassengers.Value);
 
             var service = new ReservationService(new ReservationRepositorySql(), new PackageRepositorySql());
-            var cmd = new TurističkaOrganizacija.Application.Commands.MakeReservationCommand(client.Id, pack, (int)nudPassengers.Value, total, service);
-            new TurističkaOrganizacija.Application.Commands.CommandInvoker().ExecuteCommand(cmd);
+            service.Reserve(client.Id, pack, (int)nudPassengers.Value, total);
             MessageBox.Show("Rezervacija uspešna.");
         }
 

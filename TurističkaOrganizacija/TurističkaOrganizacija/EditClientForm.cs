@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows.Forms;
 using TurističkaOrganizacija.Domain;
 using TurističkaOrganizacija.Application;
-using TurističkaOrganizacija.Application.Commands;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
 using TurističkaOrganizacija.GUI; // opcionalno za TextBoxPlaceholder
 
@@ -13,7 +12,7 @@ namespace TurističkaOrganizacija
     {
         private readonly Client _original;
         private readonly ClientService _service;
-        private readonly CommandInvoker _invoker;
+        // removed CommandInvoker
 
         private TextBox txtIme = new TextBox();
         private TextBox txtPrezime = new TextBox();
@@ -25,10 +24,10 @@ namespace TurističkaOrganizacija
         private Button btnSave = new Button { Text = "Sačuvaj" };
         private Button btnCancel = new Button { Text = "Otkaži", DialogResult = DialogResult.Cancel };
 
-        public EditClientForm(Client original, ClientService service, CommandInvoker invoker)
+        public EditClientForm(Client original, ClientService service)
         {
             if (original == null) throw new ArgumentNullException(nameof(original));
-            _original = original; _service = service; _invoker = invoker ?? new CommandInvoker();
+            _original = original; _service = service;
 
             Text = "Izmena klijenta";
             StartPosition = FormStartPosition.CenterParent;
@@ -115,8 +114,7 @@ namespace TurističkaOrganizacija
                 chain.SetNext(new UniquePassportRule(repo, updated.Id));
                 chain.Validate(updated);
 
-                var cmd = new UpdateClientCommand(_original, updated, pasos.ToString(), _service);
-                _invoker.ExecuteCommand(cmd);
+                _service.Update(updated, pasos.ToString());
 
                 DialogResult = DialogResult.OK;
                 Close();
