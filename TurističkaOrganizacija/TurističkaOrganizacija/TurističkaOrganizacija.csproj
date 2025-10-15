@@ -79,8 +79,9 @@
     <Compile Include="Application\Validation.cs" />
     <Compile Include="Application\PricingStrategies.cs" />
     <Compile Include="Application\PackageFactory.cs" />
+    <Compile Include="Application\Commands\CommandPattern.cs" />
     <Compile Include="Application\Facade\TouristAgencyFacade.cs" />
-    
+    <Compile Include="Application\TemplateMethod\PackageProcessor.cs" />
     <Compile Include="Infrastructure\Adapters\DatabaseAdapter.cs" />
     <Compile Include="Infrastructure\Security\SecurityService.cs" />
     <Compile Include="Infrastructure\Backup\BackupService.cs" />

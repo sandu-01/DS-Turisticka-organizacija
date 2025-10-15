@@ -11,6 +11,7 @@ using TurističkaOrganizacija.Backend;
 using TurističkaOrganizacija.Infrastructure.Backup;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
 using TurističkaOrganizacija.Application;
+using TurističkaOrganizacija.Application.Commands;
 using TurističkaOrganizacija.Application.Facade;
 using TurističkaOrganizacija.Infrastructure.Adapters;
 using TurističkaOrganizacija.GUI;
@@ -21,6 +22,7 @@ namespace TurističkaOrganizacija
     {
         private readonly Timer backupTimer = new Timer();
         private BindingSource clientsBinding = new BindingSource();
+        private readonly CommandInvoker commandInvoker = new CommandInvoker();
         private TouristAgencyFacade BuildFacade()
         {
             var adapter = new SqlServerDatabaseAdapter(new ClientRepositorySql(), new PackageRepositorySql(), new ReservationRepositorySql());
@@ -133,7 +135,7 @@ namespace TurističkaOrganizacija
 
         private void btnAddClient_Click(object sender, EventArgs e)
         {
-            using (var dlg = new AddClientForm(BuildClientService()))
+            using (var dlg = new AddClientForm(BuildClientService(), commandInvoker))
             {
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
@@ -148,7 +150,7 @@ namespace TurističkaOrganizacija
             if (dataGridView1.CurrentRow == null) return;
             if (!(dataGridView1.CurrentRow.DataBoundItem is TurističkaOrganizacija.Domain.Client selected)) return;
 
-            using (var dlg = new EditClientForm(selected, BuildClientService()))
+            using (var dlg = new EditClientForm(selected, BuildClientService(), commandInvoker))
             {
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
@@ -163,11 +165,9 @@ namespace TurističkaOrganizacija
             if (dataGridView1.CurrentRow.DataBoundItem is TurističkaOrganizacija.Domain.Client selected)
             {
                 var service = BuildClientService();
-                try
-                {
-                    service.Delete(selected.Id);
-                }
-                catch { }
+                var cmd = new DeleteClientCommand(selected, service);
+                commandInvoker.ExecuteCommand(cmd);
+
             }
         }
 

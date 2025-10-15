@@ -111,8 +111,7 @@ namespace TurističkaOrganizacija.Infrastructure.Repositories.SqlClient
             string aktivnosti = (mountainPackage != null && mountainPackage.Activities != null) ? string.Join(",", mountainPackage.Activities) : null;
             AddParam(cmd, "@aktiv", aktivnosti);
             AddParam(cmd, "@vodic", string.IsNullOrEmpty(package.GuideName) ? null : "da");
-            // DB column 'trajanje' is TIME; map days -> TimeSpan
-            AddParam(cmd, "@trajanje", package.DurationDays.HasValue ? (object)TimeSpan.FromDays(package.DurationDays.Value) : DBNull.Value);
+            AddParam(cmd, "@trajanje", package.DurationDays.HasValue ? (object)package.DurationDays.Value : DBNull.Value);
             AddParam(cmd, "@brod", package.ShipName);
             AddParam(cmd, "@ruta", package.Route);
             AddParam(cmd, "@datum", package.DepartureDate.HasValue ? (object)package.DepartureDate.Value.Date : DBNull.Value);
@@ -158,9 +157,8 @@ namespace TurističkaOrganizacija.Infrastructure.Repositories.SqlClient
             p.GuideName = (r["vodic"] != DBNull.Value && r["vodic"].ToString() == "da") ? "Vodic" : null;
             if (r["trajanje"] != DBNull.Value)
             {
-                // DB 'trajanje' is TIME; convert to days
-                var ts = (TimeSpan)r["trajanje"];
-                p.DurationDays = (int)Math.Ceiling(ts.TotalDays);
+                // trajanje je INT broj dana
+                p.DurationDays = Convert.ToInt32(r["trajanje"]);
             }
             p.ShipName = r["brod"] as string;
             p.Route = r["ruta"] as string;
