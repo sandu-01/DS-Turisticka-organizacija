@@ -39,7 +39,7 @@ create table paketi
 	vrstaSmestaja varchar(20) null,
 	dodatneAktivnosti varchar(100) null,
 	vodic varchar(2) null check(vodic in('da','ne')),
-	trajanje time null,
+	trajanje decimal(10,2) null,
 	brod varchar(30) null,
 	ruta varchar(100) null,
 	datumPolaska date null,
