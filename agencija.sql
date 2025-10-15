@@ -39,7 +39,7 @@ create table paketi
 	vrstaSmestaja varchar(20) null,
 	dodatneAktivnosti varchar(100) null,
 	vodic varchar(2) null check(vodic in('da','ne')),
-	trajanje time null,
+	trajanje decimal(10,2) null,
 	brod varchar(30) null,
 	ruta varchar(100) null,
 	datumPolaska date null,
@@ -49,7 +49,7 @@ create table paketi
 insert into paketi(nazivPak,cena,vrstaPak,destinacija,tipPrevoza,vrstaSmestaja) values('Grcka Letovanje',35233.76,'more','Halkidiki','Bus','Hotel')
 insert into paketi(nazivPak,cena,vrstaPak,destinacija,tipPrevoza,vrstaSmestaja) values('Grcka Letovanje',20233.76,'more','Halkidiki','Bus','Hostel')
 insert into paketi(nazivPak,cena,vrstaPak,destinacija,tipPrevoza,vrstaSmestaja,dodatneAktivnosti) values('Zlatibor Zimovanje',40031.33,'planina','Zlatibor','Bus','Apartman',null)
-insert into paketi(nazivPak,cena,vrstaPak,destinacija,tipPrevoza,vodic,trajanje) values('Italija',37330.22,'ekskurzija','Rim','Bus','da','05:30:00')
+insert into paketi(nazivPak,cena,vrstaPak,destinacija,tipPrevoza,vodic) values('Italija',37330.22,'ekskurzija','Rim','Bus','da')
 insert into paketi(nazivPak,cena,vrstaPak,ruta,datumPolaska,tipKabine) values('Krstarenje do SAD',320000,'krstarenje','Genoa,Italija-Barselona,Spanija-Miami,SAD-Kartahena,Kolumbija-San Diego,Kalifornija,SAD','2025-05-25','Prozorska')
 insert into paketi(nazivPak,cena,vrstaPak,destinacija,tipPrevoza,vrstaSmestaja) values('Turska',25733.40,'more','Kusadasi','Avion','Pansion')
 insert into paketi(nazivPak,cena,vrstaPak,destinacija,tipPrevoza,vrstaSmestaja,dodatneAktivnosti) values('Himalaji',89999.99,'planina','Himalaji','Avion','Hotel','Skijanje')

@@ -158,9 +158,7 @@ namespace TurističkaOrganizacija.Infrastructure.Repositories.SqlClient
             p.GuideName = (r["vodic"] != DBNull.Value && r["vodic"].ToString() == "da") ? "Vodic" : null;
             if (r["trajanje"] != DBNull.Value)
             {
-                // DB 'trajanje' is TIME; convert to days
-                var ts = (TimeSpan)r["trajanje"];
-                p.DurationDays = (int)Math.Ceiling(ts.TotalDays);
+                p.DurationDays = Convert.ToInt32(r["trajanje"]); ;
             }
             p.ShipName = r["brod"] as string;
             p.Route = r["ruta"] as string;
