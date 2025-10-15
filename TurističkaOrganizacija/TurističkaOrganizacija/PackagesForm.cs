@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using TurističkaOrganizacija.Application;
 using TurističkaOrganizacija.Domain;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
-using TurističkaOrganizacija.Application.TemplateMethod;
+// removed TemplateMethod usage
 using System.Drawing;
 using TurističkaOrganizacija.GUI;
 
@@ -343,8 +343,6 @@ namespace TurističkaOrganizacija
             var p = BuildPackageFromInputs();
             if (p == null) return;
 
-            var processor = PackageProcessorFactory.CreateProcessor(p.Type);
-            processor.ProcessPackage(p);
             service.Add(p);
         }
 
@@ -356,8 +354,6 @@ namespace TurističkaOrganizacija
             var p = BuildPackageFromInputs();
             if (p == null) return;
             p.Id = selected.Id;
-            var processor = PackageProcessorFactory.CreateProcessor(p.Type);
-            processor.ProcessPackage(p);
             service.Update(p);
         }
 
