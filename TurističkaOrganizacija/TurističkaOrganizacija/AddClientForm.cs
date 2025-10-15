@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Forms;
 using TurističkaOrganizacija.Application;
-using TurističkaOrganizacija.Application.Commands;
 using TurističkaOrganizacija.Domain;
 using TurističkaOrganizacija.Infrastructure.Repositories.SqlClient;
 using TurističkaOrganizacija.GUI; // for TextBoxPlaceholder if you want placeholders
@@ -12,7 +11,7 @@ namespace TurističkaOrganizacija
     public partial class AddClientForm : Form
     {
         private readonly ClientService _service;
-        private readonly CommandInvoker _invoker; // use the same one as Form1 so Undo/Redo works globally
+        // removed CommandInvoker
 
         private TextBox txtIme = new TextBox();
         private TextBox txtPrezime = new TextBox();
@@ -24,10 +23,9 @@ namespace TurističkaOrganizacija
         private Button btnSave = new Button { Text = "Sačuvaj" };
         private Button btnCancel = new Button { Text = "Otkaži", DialogResult = DialogResult.Cancel };
 
-        public AddClientForm(ClientService service, CommandInvoker invoker)
+        public AddClientForm(ClientService service)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _invoker = invoker ?? new CommandInvoker();
 
             Text = "Dodaj klijenta";
             StartPosition = FormStartPosition.CenterParent;
@@ -142,9 +140,8 @@ namespace TurističkaOrganizacija
                 chain.SetNext(new UniquePassportRule(repo, null));
                 chain.Validate(client);
 
-                // Use Command pattern so Undo radi i preko globalnog invokera
-                var cmd = new AddClientCommand(client, pasos.ToString(), _service);
-                _invoker.ExecuteCommand(cmd);
+            // Direct service call (Command removed)
+            _service.Create(client, pasos.ToString());
 
                 DialogResult = DialogResult.OK;
                 Close();
