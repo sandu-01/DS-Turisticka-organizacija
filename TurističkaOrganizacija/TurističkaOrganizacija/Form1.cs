@@ -69,7 +69,14 @@ namespace TurističkaOrganizacija
             var facade = BuildFacade();
             clientsBinding.DataSource = facade.GetAllClients();
             dataGridView1.DataSource = clientsBinding;
-            try { if (dataGridView1.Columns["PassportNumber"] != null) dataGridView1.Columns["PassportNumber"].Visible = false; } catch { }
+            try
+            {
+                if (dataGridView1.Columns["PassportNumberEncrypted"] != null)
+                    dataGridView1.Columns["PassportNumberEncrypted"].Visible = false;
+                if (dataGridView1.Columns["PassportNumber"] != null)
+                    dataGridView1.Columns["PassportNumber"].Visible = true;
+            }
+            catch { }
 
 
             btnDodaj.Click += (s, e) => btnAddClient_Click(s,e);
@@ -210,7 +217,14 @@ namespace TurističkaOrganizacija
                 txtTelefon,
                 dtpRodjenje.Value.Date,
                 dataGridView1);
-            try { if (dataGridView1.Columns["PassportNumber"] != null) dataGridView1.Columns["PassportNumber"].Visible = false; } catch { }
+            try
+            {
+                if (dataGridView1.Columns["PassportNumberEncrypted"] != null)
+                    dataGridView1.Columns["PassportNumberEncrypted"].Visible = false;
+                if (dataGridView1.Columns["PassportNumber"] != null)
+                    dataGridView1.Columns["PassportNumber"].Visible = true;
+            }
+            catch { }
         }
 
         private void Form1_Load(object sender, EventArgs e)
